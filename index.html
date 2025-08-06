@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OCR Engine (Tesseract.js)</title>
+</head>
+<body>
+  <h2>🧠 OCR Extractor</h2>
+  <input type="file" id="imageUpload" accept="image/*" />
+  <button onclick="runOCR()">Extract Text</button>
+  <p id="status"></p>
+  <pre id="output" style="white-space: pre-wrap; background: #f0f0f0; padding: 10px;"></pre>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
+  <script>
+    async function runOCR() {
+      const file = document.getElementById("imageUpload").files[0];
+      if (!file) {
+        alert("Please upload an image first.");
+        return;
+      }
+
+      document.getElementById("status").innerText = "🔍 Processing...";
+
+      const { createWorker } = Tesseract;
+      const worker = await createWorker('eng');
+
+      const imageURL = URL.createObjectURL(file);
+
+      const {
+        data: { text },
+      } = await worker.recognize(imageURL);
+
+      document.getElementById("output").innerText = text;
+      document.getElementById("status").innerText = "✅ Done";
+    }
+  </script>
+</body>
+</html>
